@@ -1,6 +1,8 @@
 package com.dz.dzim.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dz.dzim.common.enums.inter.Code;
+import com.dz.dzim.common.inter.CodeEnum;
 import com.dz.dzim.config.MyWebSocketHandler;
 import com.dz.dzim.pojo.vo.ResponseVO;
 import com.dz.dzim.service.MainMeeting;
@@ -33,6 +35,8 @@ public class ChatController {
             mainMeetingId = mainMeeting.getId();
         } catch (Exception e) {
             e.printStackTrace();
+            LOGGER.error(e.getMessage());
+            return new ResponseVO(CodeEnum.CREATION);
         }
         return new ResponseVO(mainMeetingId);
     }
@@ -56,6 +60,8 @@ public class ChatController {
             mainMeeting.inviteActorToSmallMeeting(mainMeetingActorId, smallMeetingId);
         } catch (Exception e) {
             e.printStackTrace();
+            LOGGER.error("==>smallMeetingId =" + smallMeetingId+e.getMessage());
+            return new ResponseVO(CodeEnum.CREATION);
         }
         return new ResponseVO(smallMeetingId);
     }

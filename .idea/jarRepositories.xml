@@ -12,11 +12,6 @@
       <option name="url" value="http://172.31.46.147:8081/repository/dz-wh-public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="central" />
-      <option name="name" value="Central Repository" />
-      <option name="url" value="https://repo.maven.apache.org/maven2" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="uyun-public" />
       <option name="name" value="uyun-public" />
       <option name="url" value="http://172.31.46.147:8081/repository/dz-wh-public/" />
