@@ -2,16 +2,20 @@ package com.dz.dzim.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dz.dzim.common.ResultWebSocket;
+import com.dz.dzim.common.inter.CodeEnum;
 import com.dz.dzim.controller.ChatController;
 import com.dz.dzim.pojo.vo.MsgVo;
-import com.dz.dzim.service.Meeting;
-import com.dz.dzim.service.MeetingActor;
-import com.dz.dzim.service.MeetingControl;
+import com.dz.dzim.pojo.vo.ResponseVO;
+import com.dz.dzim.service.*;
+import com.dz.dzim.service.impl.MainMeetingImpl;
 import com.dz.dzim.service.impl.MeetingActorImpl;
+import com.dz.dzim.service.impl.MeetingBase;
+import com.dz.dzim.service.impl.MeetingControlImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -27,10 +31,20 @@ import java.util.*;
 @Component
 public class MyWebSocketHandler extends TextWebSocketHandler {
 
+    private static final String MAIN_MEETING = "mainMeeting";
+    private static final String SMALL_MEETING = "smallMeeting";
+
     private Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private MeetingControl meetingControl;
 
+    @Autowired
+    private MeetingBase meetingBase;
+    @Autowired
+    private MainMeetingImpl mainMeeting;
+
+    @Autowired
+    private MeetingControlImpl meetingControlImpl;
 
     /**
      * 建立成功事件
@@ -42,32 +56,34 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         Map<String, Object> attributes = session.getAttributes();
         String actorId = String.valueOf(attributes.get("actorId")); //会场参与者编号
-        String actorType = String.valueOf(attributes.get("actorType")); //会场参与者编号
+        String actorType = String.valueOf(attributes.get("talkerType")); //会场参与者编号
 
         String meetingId = String.valueOf(attributes.get("meetingId"));
-        Meeting meeting = meetingControl.getMeetingById(meetingId);
-
-        MeetingActor actor = meeting.getActor(actorId); //根据参与者编号，检索对应的参与者
+        Meeting meeting = null;
+        Map<String, Meeting> meetingMap = meetingControl.getMeetingById(meetingId);
+        Meeting mainMeeting = meetingMap.get(MAIN_MEETING);
+        String meettingType = null;
+        if (null == mainMeeting) {
+            //小会场
+            meeting = meetingMap.get(SMALL_MEETING);
+            meettingType = SMALL_MEETING;
+        } else {
+            //主会场
+            meeting = mainMeeting;
+            meettingType = MAIN_MEETING;
+        }
+        //根据参与者编号，检索对应的参与者
+        MeetingActor actor = meeting.getActor(actorId);
         if (null == actor) {
             actor = meeting.createActor(actorId, actorType);
         }
-        actor.setWebsocket(session); //在参与者和SOCKET之间建立关联
+        //在参与者和SOCKET之间建立关联
+        actor.setWebsocket(session);
+        actor.setMeettingType(meettingType);
+        actor.sayWellcome("0x20", meetingId); //发送欢迎辞
 
-        actor.sayWellcome("0x20", JSONObject.parseObject(meetingId)); //发送欢迎辞
     }
 
-    public String getType(String type) {
-        switch (type) {
-            case "0x40":
-                return "0x41";
-            case "0x42":
-                return "0x43";
-            case "0x44":
-                return "0x45";
-            default:
-                return "";
-        }
-    }
 
     /**
      * 接受消息
@@ -87,9 +103,16 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         String meetingId = String.valueOf(attributes.get("meetingId"));
         String actorType = String.valueOf(attributes.get("actorType")); //会场参与者编号
         String userId = String.valueOf(attributes.get("actorId"));
+        Map<String, Meeting> meetingById = meetingControl.getMeetingById(meetingId);
+        Meeting smallMeeting = meetingById.get(SMALL_MEETING);
+        //如果没有小会场
+        if (null == smallMeeting) {
+            creatSmallMeetings(userId, meetingId);
+            return;
+        }
         MsgVo msgVo = new MsgVo(getType(type), System.currentTimeMillis(), 0, userId, actorType, userId, null, msg);
-        Meeting meeting = meetingControl.getMeetingById(meetingId);
-        Map<String, MeetingActorImpl> actorAll = meeting.getActorAll();
+        Meeting meetingSmall = meetingControlImpl.getMeetingByIdSmall(meetingId);
+        Map<String, MeetingActorImpl> actorAll = meetingSmall.getActorAll();
         Set<String> strings = actorAll.keySet();
         for (String s : strings) {
             MeetingActorImpl meetingActor = actorAll.get(s);
@@ -101,8 +124,6 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         Map<String, Object> attributes = session.getAttributes();
-
-
         //  log.error("session==>userid:" + meetingId);
         //sessionManage.remove(null);
     }
@@ -118,8 +139,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         String meetingId = String.valueOf(attributes.get("meetingId"));
         String userId = String.valueOf(attributes.get("actorId"));
         String actorType = String.valueOf(attributes.get("actorType")); //会场参与者编号
-
-        Meeting meeting = meetingControl.getMeetingById(meetingId);
+        Meeting meeting = meetingControl.getMeeting(meetingId);
         meeting.closedActor(userId, actorType);
 
 
@@ -137,6 +157,39 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         ByteBuffer buffer = ByteBuffer.wrap(array);
         PingMessage pingMessage = new PingMessage(buffer);
         session.sendMessage(pingMessage);
+    }
+
+    public String getType(String type) {
+        switch (type) {
+            case "0x40":
+                return "0x41";
+            case "0x42":
+                return "0x43";
+            case "0x44":
+                return "0x45";
+            default:
+                return "";
+        }
+    }
+
+    public void creatSmallMeetings(String userId, String mainMeetingActorId) throws Exception {
+        SmallMeeting smallMeetings = meetingControl.createSmallMeeting();
+        String smallMeetingsId = smallMeetings.getId();
+        //先随机查询一个客服创建小会场
+        MainMeeting mainMeeting = meetingControl.getMainMeeting();
+        Map<String, MeetingActorImpl> actorAll = mainMeeting.getActorAll();
+        for (Map.Entry<String, MeetingActorImpl> entry : actorAll.entrySet()) {
+            MeetingActorImpl actor = entry.getValue();
+            if (entry.getValue().getUserType().equals("waiter")) {
+                String id = actor.getId();
+                String kfMettingId = actor.getMeeting().getId();
+                WebSocketSession webscoket = actor.getWebscoket();
+                mainMeeting.inviteActorToSmallMeeting(id, smallMeetingsId, webscoket);
+                break;
+            }
+        }
+        WebSocketSession webscoket = actorAll.get(userId).getWebscoket();
+        mainMeeting.inviteActorToSmallMeeting(userId, smallMeetingsId, webscoket);
     }
 
 }

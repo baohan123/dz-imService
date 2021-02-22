@@ -1,5 +1,7 @@
 package com.dz.dzim.service;
 
+import org.springframework.web.socket.WebSocketSession;
+
 /**
  * 主会场
  * @author qianyangdong
@@ -12,7 +14,7 @@ public interface MainMeeting extends Meeting
 	 * @param smallMeetingId 小会场编号
 	 * @throws Exception 操作失败
 	 */
-	public void inviteActorToSmallMeeting(String mainMeetingActorId, String smallMeetingId)
+	public void inviteActorToSmallMeeting(String mainMeetingActorId, String smallMeetingId, WebSocketSession webscoket)
 	throws Exception;
 
 }

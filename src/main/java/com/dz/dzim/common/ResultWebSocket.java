@@ -28,9 +28,9 @@ public class ResultWebSocket<T> {
         }
     }
 
-    public static TextMessage txtMsg(String type, long nextSerial, JSONObject content) {
+    public static TextMessage txtMsgContentToString(String type, long nextSerial, String content) {
         JSONObject json = new JSONObject();
-        json.put("Type", type);
+        json.put("type", type);
         json.put("STime", System.currentTimeMillis());
         json.put("Serial", nextSerial);
         json.put("content", content);

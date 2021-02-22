@@ -17,6 +17,8 @@ public class MeetingActorImpl implements MeetingActor {
 
     private WebSocketSession mWebSocketSession;
 
+    private String meettingType;
+
     public MeetingActorImpl(MeetingBase meeting, String userId,String userType) {
         this.mMeeting = meeting;
         this.mUserId = userId;
@@ -49,16 +51,17 @@ public class MeetingActorImpl implements MeetingActor {
     }
 
     @Override
-    public void sayWellcome(String type,JSONObject jsonObject) throws Exception {
+    public void setMeettingType(String meettingType) {
+          this.meettingType = meettingType;
+    }
+
+    @Override
+    public void sayWellcome(String type,String meetingId) throws Exception {
         JSONObject json = new JSONObject();
-        json.put("Type", type);
+        json.put("type", type);
         json.put("STime", System.currentTimeMillis());
         json.put("Serial", meetingBase.nextSerial());
-
-        JSONObject content = new JSONObject();
-
-        json.put("content", content);
-        json.put("msg", "连接创建成功--->"+jsonObject.toString());
+        json.put("content", "连接创建成功"+meetingId);
         TextMessage textMessage = new TextMessage(JSONObject.toJSONString(json));
         this.mWebSocketSession.sendMessage(textMessage);
     }

@@ -54,10 +54,9 @@ public class ChatController {
         String smallMeetingId = null;
         try {
             MainMeeting mainMeeting = mMeetingControl.getMainMeeting();
-
             SmallMeeting smallMeeting = mMeetingControl.createSmallMeeting();
             smallMeetingId = smallMeeting.getId();
-            mainMeeting.inviteActorToSmallMeeting(mainMeetingActorId, smallMeetingId);
+        //    mainMeeting.inviteActorToSmallMeeting(mainMeetingActorId, smallMeetingId);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("==>smallMeetingId =" + smallMeetingId+e.getMessage());

@@ -4,11 +4,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.dz.dzim.common.ResultWebSocket;
 import com.dz.dzim.service.MainMeeting;
 import com.dz.dzim.service.MeetingActor;
+import com.dz.dzim.service.MeetingControl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 @Service
 public class MainMeetingImpl extends MeetingBase implements MainMeeting {
+	@Autowired
+	private MeetingBase meetingBase;
+	@Autowired
+	private MeetingControl meetingControl;
 	/**
 	 * 邀请一个主会场的参与者，加入到一个小会场
 	 * @param mainMeetingActorId 主会场参与者编号 即主会场用户id
@@ -16,15 +23,11 @@ public class MainMeetingImpl extends MeetingBase implements MainMeeting {
 	 * @throws Exception 操作失败
 	 */
 	@Override
-	public void inviteActorToSmallMeeting(String mainMeetingActorId, String smallMeetingId)
+	public void inviteActorToSmallMeeting(String mainMeetingActorId, String smallMeetingId, WebSocketSession webscoket)
 	throws Exception
 	{
-		JSONObject  content = new JSONObject();
-		content.put("smallMeetingId", smallMeetingId);
-		content.put("mainMeetingActorId", mainMeetingActorId);
-		content.put("msg","邀请加入到一个小会场--->");
-		TextMessage textMessage = ResultWebSocket.txtMsg("0x23", this.nextSerial(), content);
-		MeetingActor actor = this.getActor(mainMeetingActorId);
-		actor.getWebscoket().sendMessage(textMessage);
+		String content ="邀请"+mainMeetingActorId+"加入到一个小会场--->"+smallMeetingId;
+		TextMessage textMessage = ResultWebSocket.txtMsgContentToString("0x23", this.nextSerial(), content);
+		webscoket.sendMessage(textMessage);
 	}
 }

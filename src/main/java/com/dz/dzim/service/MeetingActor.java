@@ -41,6 +41,7 @@ public interface MeetingActor {
      */
     public void setWebsocket(WebSocketSession session) throws Exception;
 
+
     public WebSocketSession getWebscoket() throws Exception;
 
     /**
@@ -48,7 +49,7 @@ public interface MeetingActor {
      *
      * @throws Exception 操作失败
      */
-    public void sayWellcome(String type ,JSONObject jsonObject) throws Exception;
+    public void sayWellcome(String type ,String meetingId) throws Exception;
 
     /**
      * 小会场聊天
@@ -58,5 +59,9 @@ public interface MeetingActor {
      */
     public void sendMsg(MsgVo msgVo) throws Exception;
 
-
+    /**
+     * 会场类型
+     * @param meettingType
+     */
+    void setMeettingType(String meettingType);
 }

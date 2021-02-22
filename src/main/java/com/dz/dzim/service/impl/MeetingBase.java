@@ -17,7 +17,8 @@ public class MeetingBase implements Meeting
 	private final String mId = UUID.randomUUID().toString(); //会场唯一编号
 	
 	private final Map<String, MeetingActorImpl> mActors = new HashMap();
-	
+	private final Map<String, MeetingActorImpl> kfActors = new HashMap();
+
 	
 	@Override
 	public final String getId() { return mId; }
@@ -44,7 +45,7 @@ public class MeetingBase implements Meeting
 		synchronized(this.mActors)
 		{
 			actor = this.mActors.get(userId);
-			if(actor == null)
+			if(actor != null)
 			{
 			this.mActors.remove(userId);
 			}
