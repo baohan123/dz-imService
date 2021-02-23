@@ -22,7 +22,21 @@ public interface MeetingControl
 	 * @throws Exception
 	 */
 	public Map<String ,Meeting> getMeetingById(String meetingId) throws Exception;
+
+	/**
+	 * 根据会场id 查询小会场
+	 * @param smallmeetingId
+	 * @return
+	 * @throws Exception
+	 */
 	public Meeting getMeetingByIdSmall(String smallmeetingId) throws Exception;
+
+	/**
+	 * 获取会场
+	 * @param meetingId
+	 * @return
+	 * @throws Exception
+	 */
 	public Meeting getMeeting(String meetingId) throws Exception;
 
 	/**
@@ -31,4 +45,8 @@ public interface MeetingControl
 	 * @throws Exception
 	 */
 	public SmallMeeting createSmallMeeting() throws Exception;
+	/**
+	 * 删除当前小会场
+	 */
+	public void removeSmallMeeting(String smallMeetingId) throws Exception;
 }

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.dz.dzim.common.ResultWebSocket;
 import com.dz.dzim.common.inter.CodeEnum;
 import com.dz.dzim.controller.ChatController;
+import com.dz.dzim.mapper.MeetingChattingDao;
+import com.dz.dzim.pojo.doman.MeetingChattingEntity;
 import com.dz.dzim.pojo.vo.MsgVo;
 import com.dz.dzim.pojo.vo.ResponseVO;
 import com.dz.dzim.service.*;
@@ -39,9 +41,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     private MeetingControl meetingControl;
 
     @Autowired
-    private MeetingBase meetingBase;
-    @Autowired
-    private MainMeetingImpl mainMeeting;
+    private MeetingChattingDao meetingChattingDao;
 
     @Autowired
     private MeetingControlImpl meetingControlImpl;
@@ -101,23 +101,46 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         String msg = jsonObject.getString("content");
         Map<String, Object> attributes = session.getAttributes();
         String meetingId = String.valueOf(attributes.get("meetingId"));
-        String actorType = String.valueOf(attributes.get("actorType")); //会场参与者编号
+        String actorType = String.valueOf(attributes.get("talkerType"));
         String userId = String.valueOf(attributes.get("actorId"));
         Map<String, Meeting> meetingById = meetingControl.getMeetingById(meetingId);
         Meeting smallMeeting = meetingById.get(SMALL_MEETING);
+        type = getType(type);
+        long currentTimeMillis = System.currentTimeMillis();
         //如果没有小会场
         if (null == smallMeeting) {
-            creatSmallMeetings(userId, meetingId);
+           // meetingControl.createSmallMeeting(String userId)
+            addSmallMeetings(userId);
             return;
         }
-        MsgVo msgVo = new MsgVo(getType(type), System.currentTimeMillis(), 0, userId, actorType, userId, null, msg);
+        MsgVo msgVo = new MsgVo(type, currentTimeMillis, 0, userId, actorType, userId, null, msg);
         Meeting meetingSmall = meetingControlImpl.getMeetingByIdSmall(meetingId);
+
+
         Map<String, MeetingActorImpl> actorAll = meetingSmall.getActorAll();
+        if(actorAll.size() <1){
+            log.error("当前会场只要一个人，会场未建立成功,重新发送");
+            meetingControl.removeSmallMeeting(meetingId);
+            return;
+        }
+        String addrId=null;
+        String addrType=null;
         Set<String> strings = actorAll.keySet();
         for (String s : strings) {
             MeetingActorImpl meetingActor = actorAll.get(s);
+            String userIds = meetingActor.getId();
+            if(!userId.equals(userIds)){
+                addrId = userIds;
+                addrType = meetingActor.getUserType();
+            }
             meetingActor.sendMsg(msgVo);
         }
+        MeetingChattingEntity meetingChattingEntity = new MeetingChattingEntity(
+                null,meetingId, new Long(userId), actorType, null,
+                type, currentTimeMillis,
+                null, msg, new Long(addrId), addrType, null
+        );
+        meetingChattingDao.insert(meetingChattingEntity);
     }
 
 
@@ -138,7 +161,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         Map<String, Object> attributes = session.getAttributes();
         String meetingId = String.valueOf(attributes.get("meetingId"));
         String userId = String.valueOf(attributes.get("actorId"));
-        String actorType = String.valueOf(attributes.get("actorType")); //会场参与者编号
+        String actorType = String.valueOf(attributes.get("talkerType")); //会场参与者编号
         Meeting meeting = meetingControl.getMeeting(meetingId);
         meeting.closedActor(userId, actorType);
 
@@ -172,7 +195,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    public void creatSmallMeetings(String userId, String mainMeetingActorId) throws Exception {
+    public void addSmallMeetings(String userId) throws Exception {
         SmallMeeting smallMeetings = meetingControl.createSmallMeeting();
         String smallMeetingsId = smallMeetings.getId();
         //先随机查询一个客服创建小会场
@@ -180,11 +203,11 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         Map<String, MeetingActorImpl> actorAll = mainMeeting.getActorAll();
         for (Map.Entry<String, MeetingActorImpl> entry : actorAll.entrySet()) {
             MeetingActorImpl actor = entry.getValue();
-            if (entry.getValue().getUserType().equals("waiter")) {
-                String id = actor.getId();
+            if ("waiter".equals(entry.getValue().getUserType())) {
+                String userIds = actor.getId();
                 String kfMettingId = actor.getMeeting().getId();
                 WebSocketSession webscoket = actor.getWebscoket();
-                mainMeeting.inviteActorToSmallMeeting(id, smallMeetingsId, webscoket);
+                mainMeeting.inviteActorToSmallMeeting(userIds, smallMeetingsId, webscoket);
                 break;
             }
         }

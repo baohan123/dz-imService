@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dz.dzim.mapper.MeetingPlazaDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.dz.dzim.pojo.doman.MeetingPlazaEntity" id="meetingPlazaMap">
+        <result property="id" column="id"/>
+        <result property="talker" column="talker"/>
+        <result property="talkerType" column="talker_type"/>
+        <result property="meid" column="meid"/>
+        <result property="enterTime" column="enter_time"/>
+        <result property="leavingTime" column="leaving_time"/>
+        <result property="state" column="state"/>
+        <result property="prevId" column="prev_id"/>
+        <result property="nextId" column="next_id"/>
+    </resultMap>
+
+
+</mapper>

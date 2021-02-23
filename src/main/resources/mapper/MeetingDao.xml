@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dz.dzim.mapper.MeetingDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.dz.dzim.pojo.doman.MeetingEntity" id="meetingMap">
+        <result property="id" column="id"/>
+        <result property="creatTime" column="creat_time"/>
+        <result property="waitTimeout" column="wait_timeout"/>
+        <result property="waitTimeend" column="wait_timeend"/>
+        <result property="spareTimeout" column="spare_timeout"/>
+        <result property="spareTimeend" column="spare_timeend"/>
+        <result property="firstJoinTime" column="first_join_time"/>
+        <result property="lastLeaveTime" column="last_Leave_time"/>
+        <result property="state" column="state"/>
+        <result property="closedReason" column="closed_reason"/>
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dz.dzim.mapper.MeetingActorDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.dz.dzim.pojo.doman.MeetingActorEntity" id="meetingActorMap">
+        <result property="id" column="id"/>
+        <result property="talker" column="talker"/>
+        <result property="talkerType" column="talker_type"/>
+        <result property="meid" column="meid"/>
+        <result property="meetingid" column="meetingId"/>
+        <result property="inviteTime" column="invite_time"/>
+        <result property="joinTime" column="join_time"/>
+        <result property="leavingTime" column="leaving_time"/>
+        <result property="isLeaved" column="is_leaved"/>
+        <result property="leavedReason" column="leaved_reason"/>
+    </resultMap>
+
+
+</mapper>

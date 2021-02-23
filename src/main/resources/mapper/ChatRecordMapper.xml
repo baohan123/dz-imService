@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dz.dzim.mapper.ChatRecordMapper">
+
+    <insert id="addChatRecord" parameterType="com.dz.dzim.pojo.doman.MsgRecordsEntity" useGeneratedKeys="true" keyProperty="charMeg.id" keyColumn="id">
+        insert into msg_records (user_id,username,address,avatar,status,message,type,send_time,create_time,message_id)
+        values (#{user_id},#{charMeg.username},#{charMeg.address},#{charMeg.avatar},#{charMeg.status},#{charMeg.message},#{charMeg.type},
+        #{send_time}, NOW(),#{message_id} )
+    </insert>
+
+    <select id="listRecordAllFromDb" resultType="java.util.HashMap">
+        select * from msg_records
+    </select>
+
+<!--    分页查询-->
+    <select id="queryByPage" parameterType="java.lang.String" resultType="java.util.HashMap">
+       select id,user_id as userId,username,address,avatar,status,message,type,DATE_FORMAT(send_time,'%Y-%m-%d %H:%m:%s') as sendTime,DATE_FORMAT(create_time,'%Y-%m-%d %H:%m:%s') as createTime ,tel from msg_records
+       <where>
+            <if test="username != null">
+                username=#{username}
+            </if>
+       </where>
+    </select>
+
+
+    <select id="queryByPageReturnCharMegs" resultType="com.dz.dzim.pojo.doman.MsgRecordsEntity"
+            parameterType="java.lang.String">
+
+        select id,user_id as userId,username,address,avatar,status,message,type,send_time as sendTime,create_time as createTime,tel from msg_records
+        <where>
+            <if test="username != null">
+                username=#{username}
+            </if>
+        </where>
+    </select>
+
+</mapper>

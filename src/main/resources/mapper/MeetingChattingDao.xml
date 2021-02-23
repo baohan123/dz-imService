@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dz.dzim.mapper.MeetingChattingDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.dz.dzim.pojo.doman.MeetingChattingEntity" id="meetingChattingMap">
+        <result property="id" column="id"/>
+        <result property="talker" column="talker"/>
+        <result property="talkerType" column="talker_type"/>
+        <result property="contentLength" column="content_length"/>
+        <result property="contentType" column="content_type"/>
+        <result property="serverTime" column="server_time"/>
+        <result property="contentRemark" column="content_remark"/>
+        <result property="content" column="content"/>
+        <result property="addrId" column="addr_id"/>
+        <result property="addrType" column="addr_type"/>
+        <result property="reserved2" column="reserved_2"/>
+    </resultMap>
+
+
+</mapper>
