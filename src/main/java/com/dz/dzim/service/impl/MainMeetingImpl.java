@@ -26,8 +26,8 @@ public class MainMeetingImpl extends MeetingBase implements MainMeeting {
 	public void inviteActorToSmallMeeting(String mainMeetingActorId, String smallMeetingId, WebSocketSession webscoket)
 	throws Exception
 	{
-		String content ="邀请"+mainMeetingActorId+"加入到一个小会场--->"+smallMeetingId;
-		TextMessage textMessage = ResultWebSocket.txtMsgContentToString("0x23", this.nextSerial(), content);
+		String content =smallMeetingId;
+		TextMessage textMessage = ResultWebSocket.txtMsgContentToString("0x24", this.nextSerial(), content);
 		webscoket.sendMessage(textMessage);
 	}
 }
