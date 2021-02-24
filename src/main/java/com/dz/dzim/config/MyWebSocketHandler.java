@@ -143,12 +143,8 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         String userId = String.valueOf(attributes.get("talkerId"));
         String actorType = String.valueOf(attributes.get("talkerType")); //会场参与者编号
         Meeting meeting = meetingControl.getMeeting(meetingId);
-        meeting.closedActor(userId, actorType);
-        //更新代抢列表
-        if(meeting.getType().equals(MainMeeting.MAIN_MEETING)){
-            Map<String,Object> map = meeting.getActorsByMainWaiter();
-            meeting.waitingList("0x60",map);
-        }
+        meeting.closedActor(userId, actorType,meetingId);
+
     }
 
     // 处理二进制消息

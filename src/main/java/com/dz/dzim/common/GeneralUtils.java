@@ -7,11 +7,13 @@ package com.dz.dzim.common;/**
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.dz.dzim.controller.ChatController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author baohao
@@ -20,6 +22,8 @@ import java.util.UUID;
  * @date 2021/1/25 11:33
  */
 public class GeneralUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatController.class);
+
 
     public static boolean isStringLenth(String[] s) {
         if (null == s || s.length == 0 || "".equals(s)) {
@@ -67,6 +71,24 @@ public class GeneralUtils {
         jsonObject.put("obj", obj);
 
         return jsonObject.toJSONString();
+    }
+
+    /**
+     * 时间戳转date
+     * @param time
+     * @return
+     */
+    public static Date timeStamp2Date(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//要转换的时间格式
+        Date date;
+        try {
+           // date = sdf.parse(sdf.format(timeLong));
+            return sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            LOGGER.error("时间转换异常"+e.getMessage());
+            return null;
+        }
     }
 
 }

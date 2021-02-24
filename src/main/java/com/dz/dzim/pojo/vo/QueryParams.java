@@ -3,11 +3,12 @@ package com.dz.dzim.pojo.vo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dz.dzim.pojo.doman.MeetingChattingEntity;
 
+
 /**
  * @author 查询类
  * @className QueryParams
  * @description TODO
- * @date 2021/2/5 10:06
+ * @String 2021/2/5 10:06
  */
 public class QueryParams {
     /**
@@ -20,8 +21,8 @@ public class QueryParams {
     private Long waiter;
     private Integer pageNum;
     private Integer pageSize;
-    private Long startTime;
-    private Long endTime;
+    private String startTime;
+    private String endTime;
 
     public Long getMember() {
         return member;
@@ -47,19 +48,19 @@ public class QueryParams {
         this.pageSize = pageSize;
     }
 
-    public Long getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Long startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Long getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Long endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

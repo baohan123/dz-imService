@@ -58,7 +58,7 @@ public interface Meeting {
      */
     public Map<String, Object> getActorsByMainWaiter() throws Exception;
 
-    void closedActor(String userId, String userType);
+    void closedActor(String userId, String userType,String meetingId)throws Exception;
 
     void waitingList(String type, Map<String, Object> map) throws Exception;
 }

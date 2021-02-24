@@ -80,6 +80,14 @@ public class MeetingActorEntity implements Serializable {
         this.isLeaved = isLeaved;
     }
 
+    public MeetingActorEntity(String meetingid,Long talker, String talkerType, Integer isLeaved) {
+        this.meetingid = meetingid;
+        this.talker = talker;
+        this.talkerType = talkerType;
+        this.isLeaved = isLeaved;
+
+    }
+
     public MeetingActorEntity(Long id, Long talker, String talkerType, Long meid, String meetingid, Date inviteTime, Date joinTime, Date leavingTime, Integer isLeaved, Integer leavedReason) {
         this.id = id;
         this.talker = talker;

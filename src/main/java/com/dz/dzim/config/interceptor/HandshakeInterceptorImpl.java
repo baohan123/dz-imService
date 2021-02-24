@@ -1,14 +1,21 @@
 package com.dz.dzim.config.interceptor;
 
+import com.dz.dzim.common.SysConstant;
+import com.dz.dzim.mapper.MeetingActorDao;
+import com.dz.dzim.mapper.MeetingDao;
+import com.dz.dzim.pojo.doman.MeetingActorEntity;
 import com.dz.dzim.service.Meeting;
 import com.dz.dzim.service.MeetingActor;
 import com.dz.dzim.service.MeetingControl;
+import com.dz.dzim.service.impl.SmallMeetingImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
+
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -21,6 +28,9 @@ import java.util.Map;
 public class HandshakeInterceptorImpl implements org.springframework.web.socket.server.HandshakeInterceptor {
     @Autowired
     private MeetingControl meetingControl;
+    @Autowired
+    private MeetingActorDao meetingActorDao;
+
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
@@ -35,6 +45,13 @@ public class HandshakeInterceptorImpl implements org.springframework.web.socket.
         //String meetingId = request.getParameter("MeetingId").getString();
         Meeting meeting = meetingControl.getMeetingById(meetingId);
         meeting.createActor(userId,userType);
+        if(meeting.getType().equals(SmallMeetingImpl.SMALL_MEETING)){
+            MeetingActorEntity meetingActorEntity = new MeetingActorEntity(null, new Long(userId), userType,
+                    null, meetingId, null,
+                    new Date(), null,
+                    SysConstant.ZERO, null);
+            meetingActorDao.insert(meetingActorEntity);
+        }
 
 //        attributes.put("meetingId", meetingId);
 //        attributes.put("actorId", actor.getId());
