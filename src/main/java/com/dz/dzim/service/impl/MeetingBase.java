@@ -116,7 +116,7 @@ public abstract class MeetingBase implements Meeting {
             json.put("type", type);
             json.put("STime", System.currentTimeMillis());
             json.put("Serial", this.nextSerial());
-            json.put("content", JSONObject.toJSONString(memberList));
+            json.put("content", memberList);
             TextMessage textMessage = new TextMessage(JSONObject.toJSONString(json));
             for (WebSocketSession session : waiterSessionList){
                 session.sendMessage(textMessage);
