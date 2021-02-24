@@ -6,5 +6,6 @@ package com.dz.dzim.service;
  */
 public interface SmallMeeting extends Meeting
 {
+    public static final String SMALL_MEETING = "smallMeeting";
 
 }

@@ -1,16 +1,14 @@
 package com.dz.dzim.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dz.dzim.common.ResultWebSocket;
-import com.dz.dzim.config.SpringContextUtil;
 import com.dz.dzim.pojo.vo.MsgVo;
 import com.dz.dzim.service.MeetingActor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 public class MeetingActorImpl implements MeetingActor {
-    private MeetingBase meetingBase = (MeetingBase) SpringContextUtil.getApplicationContext().getBean("meetingBase");
+
+
     private final MeetingBase mMeeting;
     private final String mUserId;
     private final String userType;
@@ -19,7 +17,7 @@ public class MeetingActorImpl implements MeetingActor {
 
     private String meettingType;
 
-    public MeetingActorImpl(MeetingBase meeting, String userId,String userType) {
+    public MeetingActorImpl(MeetingBase meeting, String userId, String userType) {
         this.mMeeting = meeting;
         this.mUserId = userId;
         this.userType = userType;
@@ -52,25 +50,29 @@ public class MeetingActorImpl implements MeetingActor {
 
     @Override
     public void setMeettingType(String meettingType) {
-          this.meettingType = meettingType;
+        this.meettingType = meettingType;
     }
 
     @Override
-    public void sayWellcome(String type,String meetingId) throws Exception {
+    public void sayWellcome(String type, String meetingId) throws Exception {
+
         JSONObject json = new JSONObject();
         json.put("type", type);
-        json.put("STime", System.currentTimeMillis());
-        json.put("Serial", meetingBase.nextSerial());
-        json.put("content", "连接创建成功"+meetingId);
+        json.put("sTime", System.currentTimeMillis());
+
+        json.put("serial", mMeeting.nextSerial());
+        json.put("content", "连接创建成功" + meetingId);
         TextMessage textMessage = new TextMessage(JSONObject.toJSONString(json));
         this.mWebSocketSession.sendMessage(textMessage);
     }
 
     @Override
     public void sendMsg(MsgVo msgVo) throws Exception {
-        msgVo.setSerial(meetingBase.nextSerial());
+        msgVo.setSerial(mMeeting.nextSerial());
         TextMessage textMessage = new TextMessage(JSONObject.toJSONString(msgVo));
         this.getWebscoket().sendMessage(textMessage);
 
     }
+
+
 }

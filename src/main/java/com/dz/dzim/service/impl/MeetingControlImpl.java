@@ -16,8 +16,7 @@ import java.util.*;
 @EnableAutoConfiguration
 @Service
 public class MeetingControlImpl implements MeetingControl {
-    private static final String MAIN_MEETING = "mainMeeting";
-    private static final String SMALL_MEETING = "smallMeeting";
+
     private final MainMeetingImpl mMainMeeting = new MainMeetingImpl();
 
     private final Map<String, SmallMeetingImpl> mSmallMeetings = new HashMap();
@@ -29,16 +28,14 @@ public class MeetingControlImpl implements MeetingControl {
 
 
     @Override
-    public Map<String, Meeting> getMeetingById(String meetingId) throws Exception {
-        Map<String, Meeting> meet = new HashMap<>();
+    public Meeting getMeetingById(String meetingId) throws Exception {
         if (mMainMeeting.getId().equals(meetingId)) {
             //判断为主会场
-            meet.put(MAIN_MEETING, mMainMeeting);
+            return mMainMeeting;
         } else {
             //否则为小会场
-            meet.put(SMALL_MEETING, mSmallMeetings.get(meetingId));
+            return mSmallMeetings.get(meetingId);
         }
-        return meet;
     }
 
     @Override
@@ -65,7 +62,7 @@ public class MeetingControlImpl implements MeetingControl {
         synchronized (this.mSmallMeetings) {
             this.mSmallMeetings.put(smallMeetingId, smallMeeting);
         }
-       // //String smallMeetingsId = smallMeetings.getId();
+        // //String smallMeetingsId = smallMeetings.getId();
 //        //先随机查询一个客服创建小会场
 //        MainMeeting mainMeeting = this.getMainMeeting();
 //        Map<String, MeetingActorImpl> actorAll = mainMeeting.getActorAll();
@@ -90,4 +87,5 @@ public class MeetingControlImpl implements MeetingControl {
             this.mSmallMeetings.remove(smallMeetingId);
         }
     }
+
 }

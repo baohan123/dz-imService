@@ -9,4 +9,11 @@ public class SmallMeetingImpl extends MeetingBase implements SmallMeeting
 	public SmallMeetingImpl(MeetingControlImpl control)
 	{
 	}
+
+	@Override
+	public String getType() throws Exception {
+		return SMALL_MEETING;
+	}
+
+
 }

@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
@@ -38,15 +37,17 @@ public class ChatController {
     public ResponseVO creatMainMeeting(@RequestBody JSONObject jsonObject) {
         Meeting mainMeeting = null;
         String mainMeetingId = null;
+        String userType = jsonObject.getString("userType");
         try {
             mainMeeting = mMeetingControl.getMainMeeting();
             mainMeetingId = mainMeeting.getId();
+            return new ResponseVO(mainMeetingId);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error(e.getMessage());
             return new ResponseVO(CodeEnum.CREATION);
         }
-        return new ResponseVO(mainMeetingId);
+
     }
 
 
@@ -64,7 +65,7 @@ public class ChatController {
             MainMeeting mainMeeting = mMeetingControl.getMainMeeting();
             SmallMeeting smallMeeting = mMeetingControl.createSmallMeeting();
             smallMeetingId = smallMeeting.getId();
-        //    mainMeeting.inviteActorToSmallMeeting(mainMeetingActorId, smallMeetingId);
+           mainMeeting.inviteActorToSmallMeeting(mainMeetingActorId, smallMeetingId);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("==>smallMeetingId =" + smallMeetingId+e.getMessage());
@@ -90,10 +91,10 @@ public class ChatController {
     }
 
     /**
-     * 分页查询聊天记录
+     * 分页 查询当前用户所有聊天记录
      */
-    @PostMapping("/queryChat")
-    public ResponseVO queryChat(@RequestBody QueryParams params) {
+    @PostMapping("/queryChatToUser")
+    public ResponseVO queryChatToUser(@RequestBody QueryParams params) {
         Long startTime = params.getStartTime();
         Long endTime = params.getEndTime();
         if (null == endTime || SysConstant.ZERO == endTime) {
@@ -101,7 +102,7 @@ public class ChatController {
         }
 
         Page<MeetingChattingEntity> page = QueryParams.getPage(params);
-        Long talker = params.getTalker();
+        Long talker = params.getMember();
         //如果是用户
         QueryWrapper<MeetingChattingEntity> queryWrapper = new QueryWrapper();
         //条件查询
@@ -112,5 +113,39 @@ public class ChatController {
         }
         Page<MeetingChattingEntity> meetingChattingEntityPage = meetingChattingDao.selectPage(page, queryWrapper);
         return new ResponseVO(meetingChattingEntityPage);
+    }
+
+
+    /**
+     * 分页查询聊天记录  当前客服，用户 一对一聊天记录
+     */
+    @PostMapping("/queryChatToWaiter")
+    public ResponseVO queryChatToWaiter(@RequestBody QueryParams params) {
+        Long startTime = params.getStartTime();
+        Long endTime = params.getEndTime();
+        if (null == endTime || SysConstant.ZERO == endTime) {
+            endTime = System.currentTimeMillis();
+        }
+        Page<MeetingChattingEntity> page = QueryParams.getPage(params);
+        Long memberId = params.getMember();
+        Long waiter = params.getWaiter();
+        QueryWrapper<MeetingChattingEntity> queryWrapper = new QueryWrapper();
+
+        queryWrapper.eq("talker", waiter).eq("addr_id", memberId).orderByDesc("server_time");
+        if (null != startTime && SysConstant.ZERO != startTime) {
+            Long finalEndTime = endTime;
+            queryWrapper.and(wrapper -> wrapper.ge("server_time", startTime).le("server_time", finalEndTime));
+        }
+        Page<MeetingChattingEntity> meetingChattingEntityPage = meetingChattingDao.selectPage(page, queryWrapper);
+        return new ResponseVO(meetingChattingEntityPage);
+    }
+
+    /**
+     * 分页查询聊天记录  当前用户所有聊天记录
+     */
+    @PostMapping("/queryChatToWaiterList")
+    public ResponseVO queryChatToWaiterList(@RequestBody QueryParams params) {
+
+        return null;
     }
 }

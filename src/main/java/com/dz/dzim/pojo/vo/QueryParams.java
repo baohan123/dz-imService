@@ -10,19 +10,25 @@ import com.dz.dzim.pojo.doman.MeetingChattingEntity;
  * @date 2021/2/5 10:06
  */
 public class QueryParams {
-
-    private Long talker;
+    /**
+     * 用户id
+     */
+    private Long member;
+    /**
+     * 客服id
+     */
+    private Long waiter;
     private Integer pageNum;
     private Integer pageSize;
     private Long startTime;
     private Long endTime;
 
-    public Long getTalker() {
-        return talker;
+    public Long getMember() {
+        return member;
     }
 
-    public void setTalker(Long talker) {
-        this.talker = talker;
+    public void setMember(Long member) {
+        this.member = member;
     }
 
     public Integer getPageNum() {
@@ -57,8 +63,17 @@ public class QueryParams {
         this.endTime = endTime;
     }
 
+    public Long getWaiter() {
+        return waiter;
+    }
+
+    public void setWaiter(Long waiter) {
+        this.waiter = waiter;
+    }
+
     /**
      * 组装分页信息
+     *
      * @param params
      * @return
      */

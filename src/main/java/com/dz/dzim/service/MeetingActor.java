@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.dz.dzim.pojo.vo.MsgVo;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.Map;
+
 /**
  * 会场的参与者
  *
@@ -49,19 +51,22 @@ public interface MeetingActor {
      *
      * @throws Exception 操作失败
      */
-    public void sayWellcome(String type ,String meetingId) throws Exception;
+    public void sayWellcome(String type, String meetingId) throws Exception;
 
     /**
      * 小会场聊天
      * userId ==>会场发言热
      * meetingId 小会场编号
+     *
      * @throws Exception 操作失败
      */
     public void sendMsg(MsgVo msgVo) throws Exception;
 
     /**
      * 会场类型
+     *
      * @param meettingType
      */
     void setMeettingType(String meettingType);
+
 }

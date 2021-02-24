@@ -31,8 +31,8 @@ public class ResultWebSocket<T> {
     public static TextMessage txtMsgContentToString(String type, long nextSerial, String content) {
         JSONObject json = new JSONObject();
         json.put("type", type);
-        json.put("STime", System.currentTimeMillis());
-        json.put("Serial", nextSerial);
+        json.put("sTime", System.currentTimeMillis());
+        json.put("serial", nextSerial);
         json.put("content", content);
         return new TextMessage(JSONObject.toJSONString(json));
     }

@@ -1,6 +1,5 @@
 package com.dz.dzim.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.dz.dzim.common.ResultWebSocket;
 import com.dz.dzim.service.MainMeeting;
 import com.dz.dzim.service.MeetingActor;
@@ -16,6 +15,12 @@ public class MainMeetingImpl extends MeetingBase implements MainMeeting {
 	private MeetingBase meetingBase;
 	@Autowired
 	private MeetingControl meetingControl;
+
+	@Override
+	public String getType() throws Exception {
+		return MAIN_MEETING;
+	}
+
 	/**
 	 * 邀请一个主会场的参与者，加入到一个小会场
 	 * @param mainMeetingActorId 主会场参与者编号 即主会场用户id
@@ -23,11 +28,14 @@ public class MainMeetingImpl extends MeetingBase implements MainMeeting {
 	 * @throws Exception 操作失败
 	 */
 	@Override
-	public void inviteActorToSmallMeeting(String mainMeetingActorId, String smallMeetingId, WebSocketSession webscoket)
+	public void inviteActorToSmallMeeting(String mainMeetingActorId, String smallMeetingId)
 	throws Exception
 	{
-		String content =smallMeetingId;
-		TextMessage textMessage = ResultWebSocket.txtMsgContentToString("0x24", this.nextSerial(), content);
-		webscoket.sendMessage(textMessage);
+		TextMessage textMessage = ResultWebSocket.txtMsgContentToString("0x24", this.nextSerial(), smallMeetingId);
+		MeetingActor actor = this.getActor(mainMeetingActorId);
+		actor.getWebscoket().sendMessage(textMessage);
 	}
+
+
+
 }

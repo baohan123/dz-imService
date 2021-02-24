@@ -35,33 +35,36 @@ public class GeneralUtils {
 
     /**
      * 生成随机数  时间戳+UUID
+     *
      * @param num
      * @return
      */
     public static String randomUUID(int num) {
-        // Random random = new Random(10);
         long l = System.currentTimeMillis();
-        return String.valueOf(System.currentTimeMillis()) + UUID.randomUUID().toString().substring(num).replace("-", "");
+        return System.currentTimeMillis() + UUID.randomUUID().toString().substring(num).replace("-", "");
     }
+
+
 
 
     /**
      * 将Map序列化为字符串
      */
-    public static String serializeMap(Map<String , Object> map){
+    public static String serializeMap(Map<String, Object> map) {
         return new JSONObject(map).toString();
     }
+
     /**
      * 将Map序列化为字符串
      */
-    public static String serializeList(List<Object> list){
+    public static String serializeList(List<Object> list) {
         return new JSONArray(list).toString();
     }
 
-    public static String objectToString(String type,Object obj){
+    public static String objectToString(String type, Object obj) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type",type);
-        jsonObject.put("obj",obj);
+        jsonObject.put("type", type);
+        jsonObject.put("obj", obj);
 
         return jsonObject.toJSONString();
     }
