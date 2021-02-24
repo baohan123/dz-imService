@@ -149,7 +149,6 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             Map<String,Object> map = meeting.getActorsByMainWaiter();
             meeting.waitingList("0x60",map);
         }
-
     }
 
     // 处理二进制消息

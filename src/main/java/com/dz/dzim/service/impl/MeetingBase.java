@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.*;
 
@@ -81,17 +82,18 @@ public abstract class MeetingBase implements Meeting {
         List listSession = new ArrayList();
         Map<String,Object> map =new HashMap<>();
         synchronized (this.mActors) {
-
             Map<String, MeetingActorImpl> mActors = this.mActors;
             Set<String> strings = mActors.keySet();
             for (String s : strings) {
                 MeetingActorImpl meetingActor = mActors.get(s);
                 if (mActors.get(s).getUserType().equals("member")) {
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("id", meetingActor.getId());
-                    jsonObject.put("userType", meetingActor.getUserType());
-                    list.add(jsonObject);
-
+                    String id = meetingActor.getId();
+//                    if(!StringUtils.isEmpty(id)){
+                        jsonObject.put("id", meetingActor.getId());
+                        jsonObject.put("userType", meetingActor.getUserType());
+                        list.add(jsonObject);
+                  //  }
                 } else {
                     WebSocketSession webscoket = meetingActor.getWebscoket();
                     listSession.add(webscoket);
