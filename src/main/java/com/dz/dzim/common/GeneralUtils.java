@@ -13,6 +13,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,8 +52,6 @@ public class GeneralUtils {
     }
 
 
-
-
     /**
      * 将Map序列化为字符串
      */
@@ -77,20 +76,20 @@ public class GeneralUtils {
 
     /**
      * 时间戳转date
+     *
      * @param time
      * @return
      */
     public static Date timeStamp2Date(String time) {
-        Date date;
         try {
-            String read = new Scanner(time).nextLine();
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(read);
+            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",Locale.CHINA).parse(time);
         } catch (ParseException e) {
             e.printStackTrace();
-            LOGGER.error("时间转换异常"+e.getMessage());
+            LOGGER.error("时间转换异常" + e.getMessage());
             return null;
         }
 
     }
+
 
 }

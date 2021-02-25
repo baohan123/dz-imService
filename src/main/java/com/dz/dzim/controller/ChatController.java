@@ -164,7 +164,7 @@ public class ChatController {
      * 分页查询聊天记录  当前用户所有聊天记录
      */
     @PostMapping("/queryChatToWaiterList")
-    public ResponseVO queryChatToWaiterList(@RequestBody QueryParams params) {
+    public ResponseVO queryChatToWaiterList(@RequestBody JSONObject jsonObject) {
 
         return null;
     }
