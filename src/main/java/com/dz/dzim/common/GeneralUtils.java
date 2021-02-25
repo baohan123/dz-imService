@@ -8,6 +8,8 @@ package com.dz.dzim.common;/**
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dz.dzim.controller.ChatController;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,16 +81,16 @@ public class GeneralUtils {
      * @return
      */
     public static Date timeStamp2Date(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//要转换的时间格式
         Date date;
         try {
-           // date = sdf.parse(sdf.format(timeLong));
-            return sdf.parse(time);
+            String read = new Scanner(time).nextLine();
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(read);
         } catch (ParseException e) {
             e.printStackTrace();
             LOGGER.error("时间转换异常"+e.getMessage());
             return null;
         }
+
     }
 
 }

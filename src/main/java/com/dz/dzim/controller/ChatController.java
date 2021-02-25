@@ -79,7 +79,6 @@ public class ChatController {
     @PostMapping("/creatSmallMeeting")
     public ResponseVO creatSmallMeeting(@RequestBody JSONObject jsonObject) {
         String userId = jsonObject.getString("memberId");
-
         //被邀请的客户，其在主会场中的参与者的编号，即：客户的用户编号
         String mainMeetingActorId = userId;
         String smallMeetingId = null;
@@ -120,14 +119,11 @@ public class ChatController {
      */
     @PostMapping("/queryChatToUser")
     public ResponseVO queryChatToUser(@RequestBody JSONObject jsonObject) {
-        Long talker = jsonObject.getLong("member");
+        Long talker = jsonObject.getLong("talker");
         Integer pageNum = jsonObject.getInteger("pageNum");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String startTime = jsonObject.getString("startTime");
         String endTime = jsonObject.getString("endTime");
-        //select * from chatting
-        // where meetingid in (select distinct(meetingId)  from chatting where talker='me');
-        // params.getStartTime();
         Date startTimeDate = GeneralUtils.timeStamp2Date(startTime);
         Date endTimeDate = GeneralUtils.timeStamp2Date(endTime);
         //分页信息

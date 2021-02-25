@@ -29,13 +29,13 @@ public interface MeetingChattingDao extends BaseMapper<MeetingChattingEntity> {
             "\tFROM\n" +
             "\t\tmeeting_actor a \n" +
             "\tWHERE\n" +
-            "\t\ta.join_time > '2020-02-24 16:21:30' \n" +
-            "\t\tAND a.join_time < '2021-02-21 12:01:30' \n" +
-            "\t\tAND a.talker = '3333' \n" +
+            "\t\ta.join_time > #{startTime} \n" +
+            "\t\tAND a.join_time < #{endTime} \n" +
+            "\t\tAND a.talker = #{talker} \n" +
             "\tGROUP BY\n" +
             "\t\ta.meetingId \n" +
-            "\tORDER BY\n" +
-            "\tjoin_time DESC \n" +
-            "\t)")
+            "\t) \n" +
+            "ORDER BY\n" +
+            "\tserver_time DESC")
     List<MeetingChattingEntity> findByMeetingIdChatt(Date startTime, Date endTime, Long talker);
 }
