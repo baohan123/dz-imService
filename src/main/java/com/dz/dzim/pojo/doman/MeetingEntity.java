@@ -164,6 +164,25 @@ public class MeetingEntity implements Serializable {
 
     }
 
+    /**
+     * 查询
+     * @param spareTimeend 当只有一个参与者的时候，会场最多允许存在多长时间
+     * @param closedReason 会场被关闭的原因：0-未关闭；1-没有任何参与者加入，等待超时；
+     *                     2-所有参与者离开；3-只有一个参与者，空闲超时；4-系统异常关闭
+     */
+    public MeetingEntity(Date spareTimeend,Integer closedReason) {
+        this.spareTimeend = spareTimeend;
+        this.closedReason = closedReason;
+
+    }
+
+    /**
+     * 离开会场
+     * @param id
+     * @param lastLeaveTime
+     * @param state
+     * @param closedReason
+     */
     public MeetingEntity(String id, Date lastLeaveTime, Integer state, Integer closedReason) {
         this.id = id;
         this.lastLeaveTime = lastLeaveTime;

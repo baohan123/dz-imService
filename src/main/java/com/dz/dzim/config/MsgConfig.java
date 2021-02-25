@@ -31,6 +31,9 @@ public class MsgConfig {
     @Value("${0x31}")
     private String sysEnd;
 
+    @Value("${spareTimeend}")
+    private Integer spareTimeend;
+
     public String getSysGo() {
         return sysGo;
     }
@@ -49,5 +52,9 @@ public class MsgConfig {
 
     public String getSysEnd() {
         return sysEnd;
+    }
+
+    public Integer getSpareTimeend() {
+        return spareTimeend;
     }
 }

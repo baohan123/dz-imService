@@ -3,6 +3,9 @@ package com.dz.dzim.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dz.dzim.pojo.doman.MeetingActorEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.Date;
 
 /**
  * 聊天参与者状态记录表
@@ -13,4 +16,11 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MeetingActorDao extends BaseMapper<MeetingActorEntity> {
+
+    @Select("UPDATE meeting_actor \n" +
+            "\tSET is_leaved = 2 \n" +
+            "WHERE\n" +
+            "\tmeetingId IN ( SELECT id FROM meeting m WHERE spare_timeend < #{nowDate} AND state != 3 ) \n" +
+            "\tAND is_leaved != 2 ")
+    void findByClosedReasonAndSpareTimeend(Date nowDate);
 }

@@ -6,6 +6,7 @@ import com.dz.dzim.pojo.vo.MeetingAndActorEntityVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,5 +36,10 @@ public interface MeetingDao extends BaseMapper<MeetingEntity> {
             "\tLEFT JOIN meeting_actor a ON m.id = a.meetingId \n" +
             "WHERE m.id= #{id} and m.state= #{state}")
     List<MeetingAndActorEntityVo> findByIdAndActor(String id, Integer state);
+
+    @Select("SELECT id FROM meeting m WHERE m.closed_reason =3 " +
+            "and m.spare_timeend < #{date} AND m.state != 3 ")
+    List<String> findByClosedReasonAndSpareTimeend(Date date);
+
 
 }

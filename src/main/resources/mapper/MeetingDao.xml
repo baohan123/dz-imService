@@ -18,4 +18,21 @@
     </resultMap>
 
 
+    <!--动态批量更新，<set></set>相当于SET-->
+    <update id="updateBachByIds" parameterType="java.lang.String">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update UserInfo
+
+            <set>
+                <if test="item.userName != null">userName=#{item.userName},</if>
+                <if test="item.age != null">age=#{item.age},</if>
+                <if test="item.sex != null">sex=#{item.sex},</if>
+                <if test="item.salary != null">salary=#{item.salary},</if>
+                <if test="item.completed != null">completed=#{item.completed},</if>
+                <if test="item.remark != null">remark=#{item.remark}</if>
+            </set>
+            where userInfoId = #{item.userInfoId}
+        </foreach>
+    </update>
+
 </mapper>

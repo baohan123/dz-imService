@@ -48,10 +48,10 @@ public interface MeetingActor {
 
     /**
      * 发送欢迎辞
-     *
+     * meetingType 会场类型
      * @throws Exception 操作失败
      */
-    public void sayWellcome(String type, String meetingId) throws Exception;
+    public void sayWellcome(String meetingType, String meetingId) throws Exception;
 
     /**
      * 小会场聊天

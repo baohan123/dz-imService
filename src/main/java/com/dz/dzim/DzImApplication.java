@@ -6,9 +6,14 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableRabbit
+@EnableAsync
+// 开启定时任务
+@EnableScheduling
 //@MapperScan("com.dz")
 /**开启rabbitmq*/
 public class DzImApplication {

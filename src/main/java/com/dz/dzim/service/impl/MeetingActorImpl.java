@@ -2,6 +2,7 @@ package com.dz.dzim.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dz.dzim.pojo.vo.MsgVo;
+import com.dz.dzim.service.MainMeeting;
 import com.dz.dzim.service.MeetingActor;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -54,10 +55,15 @@ public class MeetingActorImpl implements MeetingActor {
     }
 
     @Override
-    public void sayWellcome(String type, String meetingId) throws Exception {
-
+    public void sayWellcome(String meetingType, String meetingId) throws Exception {
+        String returnType =null;
+        if(meetingType.equals(MainMeeting.MAIN_MEETING)){
+            returnType ="0x20";
+        } else {
+            returnType ="0x32";
+        }
         JSONObject json = new JSONObject();
-        json.put("type", type);
+        json.put("type", returnType);
         json.put("sTime", System.currentTimeMillis());
 
         json.put("serial", mMeeting.nextSerial());

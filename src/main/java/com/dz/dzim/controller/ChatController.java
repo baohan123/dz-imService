@@ -136,28 +136,21 @@ public class ChatController {
 
 
     /**
-     * 分页查询聊天记录  当前客服，用户 一对一聊天记录
+     * 查询当前用户聊天列表用户列表
      */
-    @PostMapping("/queryChatToWaiter")
-    public ResponseVO queryChatToWaiter(@RequestBody QueryParams params) {
-//        Long startTime = params.getStartTime();
-//        Long endTime = params.getEndTime();
-//        if (null == endTime || SysConstant.ZERO == endTime) {
-//            endTime = System.currentTimeMillis();
-//        }
-//        Page<MeetingChattingEntity> page = QueryParams.getPage(params);
-//        Long memberId = params.getMember();
-//        Long waiter = params.getWaiter();
-//        QueryWrapper<MeetingChattingEntity> queryWrapper = new QueryWrapper();
-//
-//        queryWrapper.eq("talker", waiter).eq("addr_id", memberId).orderByDesc("server_time");
-//        if (null != startTime && SysConstant.ZERO != startTime) {
-//            Long finalEndTime = endTime;
-//            queryWrapper.and(wrapper -> wrapper.ge("server_time", startTime).le("server_time", finalEndTime));
-//        }
-//        Page<MeetingChattingEntity> meetingChattingEntityPage = meetingChattingDao.selectPage(page, queryWrapper);
-//        return new ResponseVO(meetingChattingEntityPage);
-        return null;
+    @PostMapping("/queryChatToUserList")
+    public ResponseVO queryChatToUserList(@RequestBody JSONObject jsonObject) {
+        Long talker = jsonObject.getLong("talker");
+        Integer pageNum = jsonObject.getInteger("pageNum");
+        Integer pageSize = jsonObject.getInteger("pageSize");
+        String startTime = jsonObject.getString("startTime");
+        String endTime = jsonObject.getString("endTime");
+        //分页信息
+        PageHelper.startPage(pageNum, pageSize);
+        //执行分页查询
+        PageInfo<MeetingChattingEntity> userInfoPage = new PageInfo<MeetingChattingEntity>(
+                meetingChattingDao.queryChatToUserList(startTime, endTime, talker));
+        return new ResponseVO(userInfoPage);
     }
 
     /**

@@ -38,4 +38,19 @@ public interface MeetingChattingDao extends BaseMapper<MeetingChattingEntity> {
             "ORDER BY\n" +
             "\tserver_time DESC")
     List<MeetingChattingEntity> findByMeetingIdChatt(Date startTime, Date endTime, Long talker);
+
+    @Select("SELECT\n" +
+            "\t* \n" +
+            "FROM\n" +
+            "\tmeeting_chatting \n" +
+            "WHERE\n" +
+            "\tmeeting_id IN ( SELECT meeting_id FROM meeting_chatting WHERE talker = '44444' GROUP BY meeting_id ) \n" +
+            "\tAND talker_type = #{talker} \n" +
+            "\tAND server_time > #{startTimeDate} \n" +
+            "\tAND server_time < #{endTimeDate} \n" +
+            "GROUP BY\n" +
+            "\ttalker \n" +
+            "ORDER BY\n" +
+            "\tserver_time DESC")
+    List<MeetingChattingEntity> queryChatToUserList(String startTimeDate, String endTimeDate, Long talker);
 }

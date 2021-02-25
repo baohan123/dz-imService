@@ -61,4 +61,12 @@ public interface Meeting {
     void closedActor(String userId, String userType,String meetingId)throws Exception;
 
     void waitingList(String type, Map<String, Object> map) throws Exception;
+
+    /**
+     * 心跳检测
+     * @param type
+     * @param webSocketSession
+     * @throws Exception
+     */
+    void pingSoket(String type, WebSocketSession webSocketSession) throws Exception;
 }
