@@ -41,6 +41,13 @@ public class GeneralUtils {
     }
 
     /**
+     * UUID
+     * @return
+     */
+    public static String mIds() {
+        return UUID.randomUUID().toString();
+    }
+    /**
      * 生成随机数  时间戳+UUID
      *
      * @param num

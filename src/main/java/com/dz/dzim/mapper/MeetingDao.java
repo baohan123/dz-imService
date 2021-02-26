@@ -5,6 +5,7 @@ import com.dz.dzim.pojo.doman.MeetingEntity;
 import com.dz.dzim.pojo.vo.MeetingAndActorEntityVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  * @date 2021-01-29 11:06:32
  */
 @Mapper
+@Component
 public interface MeetingDao extends BaseMapper<MeetingEntity> {
     @Select("SELECT\n" +
             "\tm.id,\n" +
@@ -41,5 +43,13 @@ public interface MeetingDao extends BaseMapper<MeetingEntity> {
             "and m.spare_timeend < #{date} AND m.state != 3 ")
     List<String> findByClosedReasonAndSpareTimeend(Date date);
 
-
+    //查询存活的小会场
+    @Select("SELECT\n" +
+            "\t* \n" +
+            "FROM\n" +
+            "\tmeeting \n" +
+            "WHERE\n" +
+            "\tid = ( SELECT meetingId FROM meeting_actor a WHERE ( a.talker = #{userId} OR a.talker = #{kfWaiterId} ) AND is_leaved = 0 LIMIT 1 ) \n" +
+            "\tAND closed_reason = #{closedReason}")
+    MeetingEntity getByIdAndCloseReason(Integer closedReason, String userId, String kfWaiterId);
 }

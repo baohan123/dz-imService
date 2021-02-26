@@ -33,8 +33,7 @@ public class MeetingTask {
 
     /**
      * @Scheduled(fixedDelay=5000)当任务执行完毕后1分钟在执行
-     *
-     *@Scheduled(fixedRate=5000)就是每多次分钟一次，不论你业务执行花费了多少时间
+     * @Scheduled(fixedRate=5000)就是每多次分钟一次，不论你业务执行花费了多少时间
      */
 
 //    @Async("MyThreadPool") //自定义的线程执行
@@ -43,18 +42,15 @@ public class MeetingTask {
 //        System.out.println(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())+" >>fixedDelay执行....");
 //    }
     @Async("MyThreadPool") //自定义的线程执行
-    @Scheduled(fixedDelay=50000)
-    public void fixedRateJob(){
-        System.out.println(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())+" >>fixedRate执行....");
-        QueryWrapper<MeetingEntity> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(MeetingEntity::getClosedReason,SysConstant.STATUS_THREE)
-                .le(MeetingEntity::getSpareTimeend, new Date());
-
+    @Scheduled(fixedDelay = 50000)
+    public void fixedRateJob() {
+        System.out.println(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + " >>fixedRate执行....");
+        //查询小会场仅有一个人在线的用户
         List<String> ids = meetingDao.findByClosedReasonAndSpareTimeend(new Date());
-        for (String id:ids){
+        for (String id : ids) {
             meetingDao.updateById(new MeetingEntity(id, new Date(), SysConstant.STATUS_THREE, SysConstant.TWO));
-           meetingActorDao.update(null,new UpdateWrapper<MeetingActorEntity>().set("is_leaved",SysConstant.TWO).
-                   eq("meetingId",id).ne("is_leaved",SysConstant.TWO));
+            meetingActorDao.update(null, new UpdateWrapper<MeetingActorEntity>().set("is_leaved", SysConstant.TWO).
+                    eq("meetingId", id).ne("is_leaved", SysConstant.TWO));
         }
 
 

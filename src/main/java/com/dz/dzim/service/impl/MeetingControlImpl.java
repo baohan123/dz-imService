@@ -62,22 +62,7 @@ public class MeetingControlImpl implements MeetingControl {
         synchronized (this.mSmallMeetings) {
             this.mSmallMeetings.put(smallMeetingId, smallMeeting);
         }
-        // //String smallMeetingsId = smallMeetings.getId();
-//        //先随机查询一个客服创建小会场
-//        MainMeeting mainMeeting = this.getMainMeeting();
-//        Map<String, MeetingActorImpl> actorAll = mainMeeting.getActorAll();
-//        for (Map.Entry<String, MeetingActorImpl> entry : actorAll.entrySet()) {
-//            MeetingActorImpl actor = entry.getValue();
-//            if (entry.getValue().getUserType().equals("waiter")) {
-//                String id = actor.getId();
-//                String kfMettingId = actor.getMeeting().getId();
-//                WebSocketSession webscoket = actor.getWebscoket();
-//                mainMeeting.inviteActorToSmallMeeting(id, smallMeetingId, webscoket);
-//                break;
-//            }
-//        }
-//        WebSocketSession webscoket = actorAll.get(userId).getWebscoket();
-//        mainMeeting.inviteActorToSmallMeeting(userId, smallMeetingId, webscoket);
+
         return smallMeeting;
     }
 

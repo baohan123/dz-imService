@@ -3,6 +3,7 @@ package com.dz.dzim.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.dz.dzim.common.GeneralUtils;
 import com.dz.dzim.common.ResultWebSocket;
 import com.dz.dzim.common.SysConstant;
 import com.dz.dzim.config.MsgConfig;
@@ -34,15 +35,6 @@ public abstract class MeetingBase implements Meeting {
     public static final String WAITER_U = "waiter";
     public static final String MEMBER_U = "member";
 
-    @Autowired
-    private MsgConfig msgConfig;
-
-    @Autowired
-    private MeetingDao meetingDao;
-
-    @Autowired
-    private MeetingActorDao meetingActorDao;
-
     @Override
     public final String getId() {
         return mId;
@@ -65,57 +57,11 @@ public abstract class MeetingBase implements Meeting {
     public void closedActor(String userId, String userType, String meetingId) throws Exception {
         MeetingActorImpl actor;
         synchronized (this.mActors) {
-            String meetingType = this.getType();
             actor = this.mActors.get(userId);
             if (actor != null) {
                 this.mActors.remove(userId);
             }
-            //如果主会场 上线下线 则更新代抢列表
-            if (meetingType.equals(MainMeeting.MAIN_MEETING)) {
-                Map<String, Object> map = this.getActorsByMainWaiter();
-                this.waitingList("0x60", map);
-            }
-            //如果小会场 上线下线
-            if (meetingType.equals(SmallMeetingImpl.SMALL_MEETING)) {
-                List<MeetingActorEntity> actorDaoList = meetingActorDao.selectList(new QueryWrapper<>(new MeetingActorEntity(meetingId, SysConstant.ZERO)));
-
-                switch (userType) {
-                    //如果下线的是小会场客服
-                    case WAITER_U:
-                        meetingDao.updateById(new MeetingEntity(meetingId, new Date(), SysConstant.STATUS_THREE, SysConstant.TWO));
-                        meetingActorDao.update(null, new UpdateWrapper<MeetingActorEntity>().eq("meetingId", meetingId).set("is_leaved", SysConstant.TWO));
-                        break;
-                    //如果下线的是小会场用户
-                    case MEMBER_U: //如果下线的是小会场用户
-                        meetingActorDao.update(null, new UpdateWrapper<MeetingActorEntity>().eq("meetingId", meetingId).eq("talker", userId).eq("talker_type", userType).set("is_leaved", SysConstant.TWO));
-                        MeetingEntity meetingEntity = meetingDao.selectById(meetingId);
-                        Calendar rightNow = Calendar.getInstance();
-                        rightNow.setTime(new Date());
-                        rightNow.add(Calendar.MINUTE, msgConfig.getSpareTimeend());
-                        meetingEntity.setSpareTimeend(rightNow.getTime());
-                        meetingEntity.setClosedReason(SysConstant.STATUS_THREE); //当前小会场还剩一个人在线
-                        meetingDao.updateById(meetingEntity);
-                        // 用户下线 通知小会场的客服
-                        AtomicReference<Long> waiter = null;
-                        //1.如果客户直接关闭了聊天窗口，客服后台那边会提示客户已下线，会话已结束
-                        if (MEMBER_U.equals(userType)) {
-                            actorDaoList.stream().forEach(l -> {
-                                if (l.getTalkerType().equals(WAITER_U)) {
-                                    waiter.set(l.getTalker());
-                                }
-                            });
-                        }
-                        this.getActor(String.valueOf(waiter.get())).
-                                getWebscoket().sendMessage(ResultWebSocket.txtMsgContentToString("0x26", this.mSerialSeed, "用户：" + userId + "离开了小会场"));
-                        break;
-                    default:
-                        break;
-                }
-
-
-            }
-
-
+            this.remodeActor(userId, userType, meetingId);
         }
     }
 

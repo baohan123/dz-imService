@@ -1,5 +1,6 @@
 package com.dz.dzim.config.interceptor;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dz.dzim.common.SysConstant;
 import com.dz.dzim.mapper.MeetingActorDao;
 import com.dz.dzim.mapper.MeetingDao;
@@ -13,9 +14,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.socket.WebSocketHandler;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,15 +45,23 @@ public class HandshakeInterceptorImpl implements org.springframework.web.socket.
         String userId = (String) stringStringMap.get("talkerId");
         String meetingId = (String) stringStringMap.get("meetingId");
         String userType = (String) stringStringMap.get("talkerType");
-        //String meetingId = request.getParameter("MeetingId").getString();
         Meeting meeting = meetingControl.getMeetingById(meetingId);
         meeting.createActor(userId,userType);
         if(meeting.getType().equals(SmallMeetingImpl.SMALL_MEETING)){
-            MeetingActorEntity meetingActorEntity = new MeetingActorEntity(null, new Long(userId), userType,
-                    null, meetingId, null,
-                    new Date(), null,
-                    SysConstant.ZERO, null);
-            meetingActorDao.insert(meetingActorEntity);
+            //查询 小会场参与者是否有这个人
+            MeetingActorEntity actorDao = meetingActorDao.selectOne(new QueryWrapper<>(
+                    new MeetingActorEntity(meetingId,new Long(userId),userType,SysConstant.TWO)));
+            if(null == actorDao){
+                MeetingActorEntity meetingActorEntity = new MeetingActorEntity(null, new Long(userId), userType,
+                        null, meetingId, null,
+                        new Date(), null,
+                        SysConstant.ZERO, null);
+                meetingActorDao.insert(meetingActorEntity);
+            } else {
+                actorDao.setIsLeaved(SysConstant.ZERO);
+                meetingActorDao.updateById(actorDao);
+            }
+
         }
 
 //        attributes.put("meetingId", meetingId);

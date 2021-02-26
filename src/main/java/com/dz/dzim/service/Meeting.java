@@ -13,8 +13,20 @@ import java.util.Map;
  * @author qianyangdong
  */
 public interface Meeting {
-    //public boolean isMainMeeting() throws Exception;
+
+    /**
+     * 获取会场类型
+     *
+     * @return
+     * @throws Exception
+     */
     public String getType() throws Exception;
+
+    /**
+     * 异常或关闭会场会场
+     */
+    public void remodeActor(String uiserId, String userType, String meetingId) throws Exception;
+
 
     /**
      * 取得会场的唯一编号
@@ -58,12 +70,13 @@ public interface Meeting {
      */
     public Map<String, Object> getActorsByMainWaiter() throws Exception;
 
-    void closedActor(String userId, String userType,String meetingId)throws Exception;
+    void closedActor(String userId, String userType, String meetingId) throws Exception;
 
     void waitingList(String type, Map<String, Object> map) throws Exception;
 
     /**
      * 心跳检测
+     *
      * @param type
      * @param webSocketSession
      * @throws Exception

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dz.dzim.pojo.doman.MeetingActorEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -15,6 +16,7 @@ import java.util.Date;
  * @date 2021-01-29 16:17:36
  */
 @Mapper
+@Component
 public interface MeetingActorDao extends BaseMapper<MeetingActorEntity> {
 
     @Select("UPDATE meeting_actor \n" +

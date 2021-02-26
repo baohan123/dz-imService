@@ -5,6 +5,7 @@ import com.dz.dzim.pojo.doman.MeetingChattingEntity;
 import com.dz.dzim.pojo.vo.MeetingAndActorEntityVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  * @date 2021-01-31 17:24:42
  */
 @Mapper
+@Component
 public interface MeetingChattingDao extends BaseMapper<MeetingChattingEntity> {
     @Select("SELECT\n" +
             "\t* \n" +

@@ -3,6 +3,7 @@ package com.dz.dzim.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dz.dzim.pojo.doman.MeetingPlazaEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 /**
  * 主会场签到表
@@ -12,6 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2021-01-29 11:06:32
  */
 @Mapper
+@Component
 public interface MeetingPlazaDao extends BaseMapper<MeetingPlazaEntity> {
 	
 }

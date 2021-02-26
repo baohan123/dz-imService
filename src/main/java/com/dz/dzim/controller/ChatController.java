@@ -79,16 +79,27 @@ public class ChatController {
     @PostMapping("/creatSmallMeeting")
     public ResponseVO creatSmallMeeting(@RequestBody JSONObject jsonObject) {
         String userId = jsonObject.getString("memberId");
+        String kfWaiterId = jsonObject.getString("waiterId");
         //被邀请的客户，其在主会场中的参与者的编号，即：客户的用户编号
         String mainMeetingActorId = userId;
         String smallMeetingId = null;
         try {
+            //先查询是否有存活的小会场
+            MeetingEntity meetingEntity = meetingDao.getByIdAndCloseReason(SysConstant.STATUS_THREE, userId, kfWaiterId);
+            if (null != meetingEntity) {
+                //如果有存活的小会场  将会场状态恢复正常
+                meetingEntity.setClosedReason(SysConstant.ZERO);
+                meetingEntity.setSpareTimeend(null); //清除会场关闭时间
+                meetingDao.updateById(meetingEntity);
+                smallMeetingId = meetingEntity.getId();
+            } else {
+                SmallMeeting smallMeeting = mMeetingControl.createSmallMeeting();
+                smallMeetingId = smallMeeting.getId();
+                meetingDao.insert(new MeetingEntity(smallMeetingId, new Date(), SysConstant.ZERO, new Date()));
+            }
             MainMeeting mainMeeting = mMeetingControl.getMainMeeting();
-            SmallMeeting smallMeeting = mMeetingControl.createSmallMeeting();
-            smallMeetingId = smallMeeting.getId();
             mainMeeting.inviteActorToSmallMeeting(mainMeetingActorId, smallMeetingId);
-            MeetingEntity meetingEntity = new MeetingEntity(smallMeetingId, new Date(), SysConstant.ZERO, new Date());
-            meetingDao.insert(meetingEntity);
+
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("==>smallMeetingId =" + smallMeetingId + e.getMessage());

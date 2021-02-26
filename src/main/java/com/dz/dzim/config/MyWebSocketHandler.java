@@ -10,15 +10,11 @@ import com.dz.dzim.pojo.doman.MeetingChattingEntity;
 import com.dz.dzim.pojo.vo.MsgVo;
 import com.dz.dzim.pojo.vo.ResponseVO;
 import com.dz.dzim.service.*;
-import com.dz.dzim.service.impl.MainMeetingImpl;
-import com.dz.dzim.service.impl.MeetingActorImpl;
-import com.dz.dzim.service.impl.MeetingBase;
 import com.dz.dzim.service.impl.MeetingControlImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -66,8 +62,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         String meettingType = meeting.getType();
         //根据参与者编号，检索对应的参与者
         MeetingActor actor = meeting.getActor(actorId);
-        if (null == actor) {
-            log.error("连接异常");
+        if (null == actor) {log.error("MeetingActor is null ->连接异常");
         }
         //在参与者和SOCKET之间建立关联
         actor.setWebsocket(session);
@@ -133,7 +128,6 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         // TODO Auto-generated method stub
         log.info("connect websocket closed.......");
-
         Map<String, Object> attributes = session.getAttributes();
         String meetingId = String.valueOf(attributes.get("meetingId"));
         String userId = String.valueOf(attributes.get("talkerId"));
